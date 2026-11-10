@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2172 724" width="2172" height="724">
+  <!-- Line art on a transparent background: soft warm-gray strokes, objects in coral, yellow, green, and white.
+       From left to right: the materials, a question, a marked answer, the exam clock, and passing.
+       Everything sits between y 210 and 520, inside the band the dashboard shows after cropping (about 175 to 575). -->
+  <g fill="none" stroke="#6b665f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" transform="translate(0 18)">
+
+    <!-- The line everything stands on -->
+    <path d="M 180 500 H 1995"/>
+
+    <!-- The materials: a stack of books with a slide resting on top -->
+    <g>
+      <g transform="rotate(-7 410 290)">
+        <rect x="336" y="232" width="150" height="104" rx="6" fill="#ffffff"/>
+        <path d="M 356 258 H 420" stroke-width="4"/>
+        <rect x="358" y="290" width="18" height="28" rx="3" fill="#e58283" stroke-width="3.6"/>
+        <rect x="390" y="276" width="18" height="42" rx="3" fill="#f2e49d" stroke-width="3.6"/>
+        <rect x="422" y="282" width="18" height="36" rx="3" fill="#cee7aa" stroke-width="3.6"/>
+      </g>
+      <rect x="272" y="336" width="282" height="50" rx="8" fill="#f2e49d"/>
+      <rect x="506" y="344" width="38" height="34" rx="4" fill="#ffffff" stroke-width="4"/>
+      <path d="M 304 336 V 386 M 318 336 V 386" stroke-width="4"/>
+      <rect x="290" y="386" width="258" height="54" rx="8" fill="#cee7aa"/>
+      <rect x="498" y="394" width="40" height="38" rx="4" fill="#ffffff" stroke-width="4"/>
+      <path d="M 322 386 V 440 M 336 386 V 440" stroke-width="4"/>
+      <rect x="262" y="440" width="300" height="60" rx="8" fill="#e58283"/>
+      <rect x="506" y="448" width="46" height="44" rx="4" fill="#ffffff" stroke-width="4"/>
+      <path d="M 296 440 V 500 M 310 440 V 500" stroke-width="4"/>
+    </g>
+
+    <!-- A question: flashcards in a holder, the front one asking -->
+    <g>
+      <g transform="rotate(-8 770 350)">
+        <rect x="680" y="262" width="180" height="170" rx="8" fill="#ffffff"/>
+        <path d="M 700 294 H 840" stroke="#e58283" stroke-width="4"/>
+      </g>
+      <g transform="rotate(5 810 340)">
+        <rect x="716" y="246" width="190" height="184" rx="8" fill="#ffffff"/>
+        <path d="M 736 278 H 886" stroke="#e58283" stroke-width="4"/>
+        <path d="M 782 330 C 782 300, 842 298, 842 328 C 842 352, 812 350, 812 374" stroke="#e58283" stroke-width="13"/>
+        <circle cx="812" cy="400" r="8" fill="#e58283" stroke="none"/>
+      </g>
+      <rect x="668" y="414" width="252" height="86" rx="8" fill="#cee7aa"/>
+      <rect x="748" y="440" width="92" height="30" rx="5" fill="#ffffff" stroke-width="4"/>
+    </g>
+
+    <!-- A marked answer: a clipboard with two ticks and a cross, and the pencil that wrote it -->
+    <g>
+      <rect x="1020" y="252" width="220" height="248" rx="12" fill="#f2e49d"/>
+      <rect x="1040" y="284" width="180" height="198" rx="6" fill="#ffffff"/>
+      <rect x="1090" y="236" width="80" height="34" rx="8" fill="#e58283"/>
+      <path d="M 1060 324 H 1156 M 1060 376 H 1146 M 1060 428 H 1152" stroke-width="4"/>
+      <circle cx="1190" cy="324" r="16" fill="#cee7aa" stroke-width="4"/>
+      <path d="M 1182 324 L 1188 331 L 1199 317" stroke-width="4"/>
+      <circle cx="1190" cy="376" r="16" fill="#cee7aa" stroke-width="4"/>
+      <path d="M 1182 376 L 1188 383 L 1199 369" stroke-width="4"/>
+      <circle cx="1190" cy="428" r="16" fill="#e58283" stroke-width="4"/>
+      <path d="M 1184 422 L 1196 434 M 1196 422 L 1184 434" stroke-width="4"/>
+      <g transform="translate(0 9) rotate(20 1290 400)">
+        <rect x="1274" y="310" width="32" height="150" fill="#f2e49d"/>
+        <path d="M 1290 310 V 460" stroke-width="3.6"/>
+        <rect x="1274" y="284" width="32" height="30" rx="6" fill="#e58283"/>
+        <path d="M 1274 460 L 1290 496 L 1306 460 Z" fill="#ffffff"/>
+      </g>
+    </g>
+
+    <!-- The exam clock: an alarm clock with a face, ringing a little -->
+    <g>
+      <path d="M 1468 466 L 1446 500 M 1592 466 L 1614 500" stroke-width="7"/>
+      <circle cx="1460" cy="276" r="38" fill="#f2e49d"/>
+      <circle cx="1600" cy="276" r="38" fill="#f2e49d"/>
+      <path d="M 1530 252 V 226"/>
+      <circle cx="1530" cy="218" r="9" fill="#e58283"/>
+      <circle cx="1530" cy="380" r="108" fill="#cee7aa"/>
+      <circle cx="1530" cy="380" r="84" fill="#ffffff"/>
+      <path d="M 1530 306 V 320 M 1530 440 V 454 M 1456 380 H 1470 M 1590 380 H 1604" stroke-width="4"/>
+      <g stroke="none" fill="#6b665f">
+        <circle cx="1502" cy="370" r="8"/>
+        <circle cx="1558" cy="370" r="8"/>
+      </g>
+      <g stroke="none" fill="#e58283" opacity="0.6">
+        <ellipse cx="1488" cy="396" rx="12" ry="7"/>
+        <ellipse cx="1572" cy="396" rx="12" ry="7"/>
+      </g>
+      <path d="M 1516 398 Q 1530 412 1544 398" stroke-width="4"/>
+      <path d="M 1400 250 L 1382 236 M 1394 286 L 1372 284 M 1660 250 L 1678 236 M 1666 286 L 1688 284" stroke-width="4"/>
+    </g>
+
+    <!-- Passing: a graduation cap on a stack of books, with a sparkle -->
+    <g>
+      <rect x="1740" y="450" width="222" height="50" rx="8" fill="#cee7aa"/>
+      <rect x="1912" y="458" width="40" height="34" rx="4" fill="#ffffff" stroke-width="4"/>
+      <path d="M 1770 450 V 500" stroke-width="4"/>
+      <rect x="1758" y="404" width="190" height="46" rx="8" fill="#ffffff"/>
+      <path d="M 1790 404 V 450 M 1804 404 V 450" stroke-width="4"/>
+      <path d="M 1800 370 V 404 H 1900 V 370" fill="#f2e49d"/>
+      <path d="M 1745 364 L 1850 336 L 1955 364 L 1850 392 Z" fill="#f2e49d"/>
+      <path d="M 1850 364 L 1932 372 V 412" stroke-width="4"/>
+      <rect x="1922" y="410" width="20" height="30" rx="5" fill="#e58283" stroke-width="4"/>
+      <circle cx="1850" cy="364" r="7" fill="#e58283" stroke-width="4"/>
+      <path d="M 1960 262 Q 1960 290 1988 290 Q 1960 290 1960 318 Q 1960 290 1932 290 Q 1960 290 1960 262 Z" fill="#f2e49d" stroke-width="4"/>
+    </g>
+  </g>
+</svg>

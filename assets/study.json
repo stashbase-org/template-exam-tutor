@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "example": true,
+  "course": "Operating Systems",
+  "focus": ["paging", "cpu-scheduling", "synchronization"],
+  "topics": [
+    { "id": "cpu-scheduling", "name": "CPU scheduling", "level": "getting-there", "lastQuizzed": "2026-11-09" },
+    { "id": "synchronization", "name": "Process synchronization", "level": "new" },
+    { "id": "deadlocks", "name": "Deadlocks", "level": "getting-there", "lastQuizzed": "2026-11-05" },
+    { "id": "paging", "name": "Paging and the TLB", "level": "shaky", "lastQuizzed": "2026-11-09" },
+    { "id": "page-replacement", "name": "Page replacement", "level": "solid", "lastQuizzed": "2026-11-07" }
+  ],
+  "mistakes": [
+    { "title": "Round robin: a new arrival joins the queue before the process just preempted", "topic": "cpu-scheduling", "missed": ["2026-11-04", "2026-11-09"] },
+    { "title": "SRTF: waiting time is TAT − burst, not start − arrival", "topic": "cpu-scheduling", "missed": ["2026-11-04"], "fixed": "2026-11-06" },
+    { "title": "Banker's algorithm: compare Need, not Max, with Available", "topic": "deadlocks", "missed": ["2026-11-05"] },
+    { "title": "EAT: a TLB miss still pays for the TLB lookup", "topic": "paging", "missed": ["2026-11-06"] },
+    { "title": "Page table size: offset bits come from this page size, not 12 by habit", "topic": "paging", "missed": ["2026-11-09"] },
+    { "title": "Belady's anomaly happens with FIFO only", "topic": "page-replacement", "missed": ["2026-11-03"], "fixed": "2026-11-07" }
+  ],
+  "answered": [
+    { "date": "2026-11-03", "questions": 5 },
+    { "date": "2026-11-04", "questions": 5 },
+    { "date": "2026-11-05", "questions": 5 },
+    { "date": "2026-11-06", "questions": 6 },
+    { "date": "2026-11-07", "questions": 5 },
+    { "date": "2026-11-09", "questions": 6 }
+  ]
+}

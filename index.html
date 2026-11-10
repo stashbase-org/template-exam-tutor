@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exam Tutor</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #ffffff;
+    --text: #37352f;
+    --muted: rgba(55, 53, 47, 0.65);
+    --faint: rgba(55, 53, 47, 0.45);
+    --line: rgba(55, 53, 47, 0.09);
+    --line-strong: rgba(55, 53, 47, 0.22);
+    --hover: rgba(55, 53, 47, 0.06);
+    --hover-soft: rgba(55, 53, 47, 0.03);
+    --pop: #ffffff;
+    --pop-shadow: rgba(15, 15, 15, 0.05) 0 0 0 1px, rgba(15, 15, 15, 0.1) 0 3px 6px, rgba(15, 15, 15, 0.2) 0 9px 24px;
+    /* A quiet page: a low-saturation banner, section headings in gray and soft tints of the shared yellow, green, and light blue
+       (no coral, which reads as pink in large blocks), and charts in a deeper shade of the banner. */
+    --c-banner: #e3eaf0; --c-green: rgba(206, 231, 170, 0.28); --c-yellow: rgba(242, 228, 157, 0.28); --c-blue: #ebf1f5; --c-gray: #f5f5f3;
+    --d-chart: #a3b7c6; --t-chart: rgba(163, 183, 198, 0.14);
+    --t-gray: rgba(227, 226, 224, 0.6); --f-gray: #32302c; --d-gray: #b4b4b0;
+    --t-coral: rgba(229, 130, 131, 0.3); --f-coral: #6b2a2b; --d-coral: #d9686a;
+    --t-yellow: rgba(242, 228, 157, 0.65); --f-yellow: #5c4d12; --d-yellow: #cfb23a;
+    --t-green: rgba(206, 231, 170, 0.7); --f-green: #35501a; --d-green: #86b856;
+    --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --bg: #191919;
+      --text: rgba(255, 255, 255, 0.81);
+      --muted: rgba(255, 255, 255, 0.5);
+      --faint: rgba(255, 255, 255, 0.3);
+      --line: rgba(255, 255, 255, 0.094);
+      --line-strong: rgba(255, 255, 255, 0.22);
+      --hover: rgba(255, 255, 255, 0.055);
+      --hover-soft: rgba(255, 255, 255, 0.03);
+      --pop: #252525;
+      --pop-shadow: rgba(255, 255, 255, 0.08) 0 0 0 1px, rgba(0, 0, 0, 0.3) 0 3px 6px, rgba(0, 0, 0, 0.45) 0 9px 24px;
+      --c-banner: #2f353a; --c-green: rgba(206, 231, 170, 0.14); --c-yellow: rgba(242, 228, 157, 0.14); --c-blue: rgba(211, 229, 239, 0.12); --c-gray: #262626;
+      --d-chart: #9db4c6; --t-chart: rgba(157, 180, 198, 0.14);
+      --t-gray: #3f4245;
+      --t-coral: rgba(229, 130, 131, 0.26); --t-yellow: rgba(242, 228, 157, 0.2); --t-green: rgba(206, 231, 170, 0.2);
+      --f-gray: rgba(255, 255, 255, 0.86);
+      --f-coral: var(--f-gray); --f-yellow: var(--f-gray); --f-green: var(--f-gray);
+      --d-gray: #6f6f6f;
+      --d-coral: #e58283; --d-yellow: #f2e49d; --d-green: #cee7aa;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  ::selection { background: rgba(35, 131, 226, 0.28); }
+  [hidden] { display: none !important; }
+  button, input { font: inherit; color: inherit; }
+  button { cursor: pointer; background: none; border: 0; padding: 0; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid rgba(35, 131, 226, 0.6); outline-offset: 1px; border-radius: 4px; }
+  .i { width: 14px; height: 14px; flex: none; }
+  .muted { color: var(--muted); }
+
+  /* Error notice: hidden unless the data can't load or the script fails */
+  .toast { position: fixed; right: 16px; bottom: 16px; z-index: 60; display: flex; align-items: center; gap: 8px; max-width: calc(100vw - 32px); padding: 8px 12px; border-radius: 6px; background: var(--pop); box-shadow: var(--pop-shadow); color: var(--d-coral); font-size: 14px; }
+  .toast button { height: 26px; padding: 0 8px; border-radius: 4px; color: var(--text); }
+  .toast button:hover { background: var(--hover); }
+
+  /* Short Notion-style banner; the icon overlaps its bottom edge by half */
+  .banner { position: relative; height: clamp(150px, 16vw, 220px); overflow: hidden; background: var(--c-banner); }
+  .banner img { position: absolute; inset: 0; display: block; width: 92%; max-width: 1320px; height: 100%; margin-inline: auto; object-fit: cover; object-position: center 54%; }
+  .banner ~ .page .page-icon { position: relative; z-index: 1; margin-top: -52px; }
+
+  .page { max-width: 1400px; margin: 0 auto; padding: 0 72px 120px; }
+  .page-icon { display: block; width: 104px; height: 104px; margin: 44px 0 0 -4px; font-size: 88px; line-height: 104px; user-select: none; }
+  .title { margin: 18px 0 10px; font-size: 40px; font-weight: 700; line-height: 1.2; }
+  /* Header: the title, then what to say in Chat on one line */
+  .head { margin: 0 0 30px; }
+  .say { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 0; color: var(--muted); font-size: 14px; }
+  .say b { height: 24px; padding: 0 8px; border-radius: 4px; background: var(--hover); color: var(--text); font-weight: 500; line-height: 24px; white-space: nowrap; }
+  /* Left, the course: topics and mistakes. Right, just two things: my practice, and what I'm focusing on. */
+  .columns { display: grid; grid-template-columns: minmax(0, 66fr) minmax(0, 34fr); gap: 40px; align-items: start; }
+  /* Sections stack with a gap, so a hidden one leaves no space */
+  .col { display: flex; flex-direction: column; gap: 44px; min-width: 0; }
+  .section { min-width: 0; }
+
+  /* Callouts */
+  .callout { display: flex; align-items: center; gap: 8px; padding: 8px 14px 8px 12px; border-radius: 6px; }
+  /* Topics in gray, mistakes in yellow, practice in blue to match its chart, and focus in green */
+  .callout.gray { background: var(--c-gray); }
+  .callout.green { background: var(--c-green); }
+  .callout.yellow { background: var(--c-yellow); }
+  .callout.blue { background: var(--c-blue); }
+  .callout h2 { margin: 0; font-size: 17px; font-weight: 600; line-height: 1.4; }
+  .emoji { width: 22px; flex: none; font-size: 18px; line-height: 1; text-align: center; }
+  /* A table right under a heading callout keeps the same gap as one under a toolbar */
+  .callout + #topics { margin-top: 12px; }
+
+  /* Tags and chips */
+  .tag { display: inline-flex; align-items: center; gap: 5px; max-width: 100%; height: 20px; padding: 0 6px; border-radius: 3px; background: var(--tb); color: var(--tf); font-size: 12px; line-height: 20px; white-space: nowrap; }
+  .tag.status { padding: 0 8px 0 7px; border-radius: 10px; }
+  .tag.status::before { content: ""; width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--td); }
+  .k-gray { --tb: var(--t-gray); --tf: var(--f-gray); --td: var(--d-gray); }
+  .k-coral { --tb: var(--t-coral); --tf: var(--f-coral); --td: var(--d-coral); }
+  .k-yellow { --tb: var(--t-yellow); --tf: var(--f-yellow); --td: var(--d-yellow); }
+  .k-green { --tb: var(--t-green); --tf: var(--f-green); --td: var(--d-green); }
+  .chip { display: inline-flex; align-items: center; height: 22px; padding: 0 7px; border-radius: 4px; background: var(--hover); font-size: 13px; white-space: nowrap; text-decoration: none; }
+  .chip:hover { background: var(--line-strong); }
+  /* Rows already have lines between them, so links only underline on hover */
+  .link { text-decoration: none; }
+  .link:hover { text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+
+  /* Tables */
+  .tbl-scroll { overflow-x: auto; }
+  table.db { min-width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.db th { height: 34px; padding: 0 8px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--muted); font-weight: 400; text-align: left; white-space: nowrap; }
+  table.db td { padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .th { display: inline-flex; align-items: center; gap: 6px; }
+  .th .i { color: var(--faint); }
+  .aa { color: var(--faint); font-size: 12px; font-weight: 600; }
+  td.name { min-width: 170px; font-weight: 500; }
+  td.lesson { min-width: 260px; }
+  td.nowrap { white-space: nowrap; }
+  td.num { font-variant-numeric: tabular-nums; }
+  .dbbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 8px; min-height: 36px; margin: 10px 0 2px; }
+  .tabs { display: flex; gap: 2px; }
+  .tab { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 14px; font-size: 14px; color: var(--muted); white-space: nowrap; }
+  .tab:hover { background: var(--hover-soft); }
+  .tab.on { background: var(--hover); color: var(--text); font-weight: 500; }
+  .tab .n { color: var(--faint); font-weight: 400; font-variant-numeric: tabular-nums; }
+  .search { width: 170px; height: 28px; padding: 0 8px; border: 0; border-radius: 4px; background: var(--hover-soft); outline: none; font-size: 14px; }
+  .search::placeholder { color: var(--faint); }
+
+  /* Practice: the running total, as a line that only goes up, then questions answered each day */
+  .total { display: flex; align-items: baseline; gap: 8px; margin: 14px 2px 0; }
+  .total b { font-size: 40px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+  .total span { color: var(--muted); font-size: 14px; }
+  .chart-head { margin: 22px 2px 0; color: var(--muted); font-size: 12px; }
+  .chart { margin: 8px 2px 0; }
+  .chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .gr-area { fill: var(--t-chart); }
+  .gr-line { fill: none; stroke: var(--d-chart); stroke-width: 1.75; stroke-linejoin: round; }
+  .gr-dot { fill: var(--d-chart); stroke: var(--bg); stroke-width: 1.5; }
+  .bar { fill: var(--d-chart); }
+  .bar-label { fill: var(--muted); font-size: 10px; font-variant-numeric: tabular-nums; }
+  .baseline { stroke: var(--line-strong); stroke-width: 1; }
+  .axis { fill: var(--faint); font-size: 10px; }
+  .empty { margin: 12px 2px 0; color: var(--muted); font-size: 14px; }
+
+  /* What I'm focusing on */
+  .focus { margin: 12px 0 0; padding: 0; list-style: none; }
+  .focus li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 10px; padding: 8px 2px; border-bottom: 1px solid var(--line); font-size: 15px; }
+  .focus li:first-child { border-top: 1px solid var(--line); }
+
+  @media (max-width: 1040px) {
+    .columns { grid-template-columns: minmax(0, 1fr); }
+    /* In one column, what I'm focusing on comes first, and the daily chart last */
+    .col { display: contents; }
+    #focus-section { order: -1; }
+    .page { padding: 0 40px 96px; }
+  }
+  @media (max-width: 640px) {
+    .page { padding: 0 18px 80px; }
+    .title { font-size: 32px; }
+    .banner { height: clamp(96px, 24vw, 120px); }
+    .banner ~ .page .page-icon { width: 80px; height: 80px; margin-top: -40px; font-size: 68px; line-height: 80px; }
+  }
+</style>
+</head>
+<body>
+  <div class="toast" id="toast" hidden>
+    <span id="toast-text" role="status" aria-live="polite"></span>
+    <button type="button" id="toast-close" aria-label="Close" title="Close">×</button>
+  </div>
+
+  <section class="banner" aria-label="Illustration of a stack of books, flashcards with a question mark, a clipboard with two ticks and a cross, a smiling alarm clock, and a graduation cap on books">
+    <img src="./assets/banner.svg" width="2172" height="724" alt="" fetchpriority="high" decoding="async">
+  </section>
+
+  <main class="page">
+    <div class="page-icon" role="img" aria-label="Graduation cap">🎓</div>
+    <div class="head">
+      <h1 class="title" id="course"></h1>
+      <p class="say" id="start"></p>
+    </div>
+
+    <div class="columns">
+      <div class="col">
+        <section class="section" aria-labelledby="h-topics">
+          <div class="callout gray"><span class="emoji" aria-hidden="true">🗺️</span><h2 id="h-topics">Topics</h2></div>
+          <div id="topics"></div>
+        </section>
+
+        <section class="section" aria-labelledby="h-mistakes">
+          <div class="callout yellow"><span class="emoji" aria-hidden="true">📝</span><h2 id="h-mistakes">Mistakes</h2></div>
+          <div class="dbbar">
+            <div class="tabs" id="mistake-tabs" role="tablist"></div>
+            <input class="search" id="mistake-search" type="search" placeholder="Search mistakes…" aria-label="Search mistakes">
+          </div>
+          <div id="mistakes"></div>
+        </section>
+      </div>
+
+      <div class="col">
+        <section class="section" aria-labelledby="h-answered">
+          <div class="callout blue"><span class="emoji" aria-hidden="true">📈</span><h2 id="h-answered">Practice</h2></div>
+          <div id="answered"></div>
+        </section>
+
+        <section class="section" id="focus-section" aria-labelledby="h-focus">
+          <div class="callout green"><span class="emoji" aria-hidden="true">🎯</span><h2 id="h-focus">Focusing on</h2></div>
+          <ul class="focus" id="focus"></ul>
+        </section>
+      </div>
+    </div>
+  </main>
+
+<script>
+(() => {
+  "use strict";
+
+  // The dashboard shows the notes and the mistake log at a glance, plus how much I practice each day.
+  // Every topic opens its page, and every mistake opens the mistake log: StashBase opens a relative link to a page in a new tab.
+  const DATA_PATH = "./assets/study.json";
+  // The daily chart shows up to this many days, ending on the last day with questions.
+  const DAYS_SHOWN = 14;
+  const LEVEL = {
+    solid: { label: "Solid", k: "green" },
+    "getting-there": { label: "Getting there", k: "yellow" },
+    shaky: { label: "Shaky", k: "coral" },
+    new: { label: "Not quizzed", k: "gray" },
+  };
+  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  // Icons are Lucide's "list", "circle-dot", "rotate-ccw", "check", "calendar", and "x" (lucide.dev, ISC License).
+  const PATHS = {
+    list: '<path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/>',
+    status: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="1"/>',
+    retry: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
+    check: '<path d="M20 6 9 17l-5-5"/>',
+    calendar: '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
+    x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  };
+  const icon = (name) => `<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${PATHS[name]}</svg>`;
+
+  const $ = (selector) => document.querySelector(selector);
+  const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const isObj = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
+  const arr = (value) => (Array.isArray(value) ? value : []);
+  const str = (value) => (typeof value === "string" ? value : "");
+  const num = (value) => (Number.isFinite(value) && value > 0 ? Math.floor(value) : 0);
+  const isDate = (s) => typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s);
+  const parts = (s) => s.split("-").map(Number);
+  const toDate = (s) => { const [y, m, d] = parts(s); return new Date(y, m - 1, d); };
+  const pad = (n) => String(n).padStart(2, "0");
+  const toKey = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const short = (s) => { const [, m, d] = parts(s); return `${MONTHS[m - 1]} ${d}`; };
+  const tag = (o) => `<span class="tag status k-${o.k}">${esc(o.label)}</span>`;
+  const noteHref = (id) => `notes/${encodeURIComponent(id)}.md`;
+  const MISTAKES_HREF = "mistakes.md";
+
+  function normalize(raw) {
+    const src = isObj(raw) ? raw : {};
+    // Questions per day; two entries for the same day add up.
+    const answered = new Map();
+    for (const a of arr(src.answered)) {
+      if (isObj(a) && isDate(a.date)) answered.set(a.date, (answered.get(a.date) || 0) + num(a.questions));
+    }
+    return {
+      ...src,
+      example: src.example === true,
+      course: str(src.course) || "My exam",
+      topics: arr(src.topics).filter(isObj)
+        .map((t) => ({ ...t, id: str(t.id), name: str(t.name) || str(t.id), level: LEVEL[t.level] ? t.level : "new", lastQuizzed: isDate(t.lastQuizzed) ? t.lastQuizzed : "" }))
+        .filter((t) => t.id),
+      mistakes: arr(src.mistakes).filter(isObj)
+        .map((m) => ({ ...m, title: str(m.title), topic: str(m.topic), missed: arr(m.missed).filter(isDate).sort(), fixed: isDate(m.fixed) ? m.fixed : "" }))
+        .filter((m) => m.title),
+      answered,
+      focus: arr(src.focus).filter((id) => typeof id === "string"),
+    };
+  }
+
+  let data = normalize({});
+  let mistakeTab = "open";
+  let mistakeQuery = "";
+
+  const topicById = (id) => data.topics.find((t) => t.id === id);
+  const openIn = (id) => data.mistakes.filter((m) => m.topic === id && !m.fixed).length;
+
+  function render() {
+    document.title = data.course;
+    $("#course").textContent = data.course;
+    // "Set me up" only while the template's example is still here.
+    const steps = [data.example && "Set me up.", "Quiz me.", "Quiz me on my mistakes.", "Explain …", "Give me a mock exam.", "Add the new materials."].filter(Boolean);
+    $("#start").innerHTML = `<span aria-hidden="true">💬</span><span>Say in Chat</span>${steps.map((say) => `<b>“${esc(say)}”</b>`).join("")}`;
+    renderTopics();
+    renderMistakes();
+    renderAnswered();
+    renderFocus();
+  }
+
+  // One row per topic: how I'm doing, what's left to retry, and when it was last quizzed.
+  function renderTopics() {
+    $("#topics").innerHTML = `<div class="tbl-scroll"><table class="db">
+      <thead><tr>
+        <th><span class="th"><span class="aa">Aa</span>Topic</span></th>
+        <th><span class="th">${icon("status")}How I'm doing</span></th>
+        <th><span class="th">${icon("retry")}To retry</span></th>
+        <th><span class="th">${icon("calendar")}Last quizzed</span></th>
+      </tr></thead>
+      <tbody>${data.topics.map((t) => `<tr>
+          <td class="name"><a class="link" href="${noteHref(t.id)}">${esc(t.name)}</a></td>
+          <td class="nowrap">${tag(LEVEL[t.level])}</td>
+          <td class="num">${openIn(t.id) || ""}</td>
+          <td class="nowrap">${t.lastQuizzed ? short(t.lastQuizzed) : ""}</td>
+        </tr>`).join("") || '<tr><td colspan="4" class="muted">No topics yet</td></tr>'}</tbody>
+    </table></div>`;
+  }
+
+  // The mistake log: what's still to retry, and what's been fixed.
+  function renderMistakes() {
+    const open = data.mistakes.filter((m) => !m.fixed);
+    const fixed = data.mistakes.filter((m) => m.fixed);
+    $("#mistake-tabs").innerHTML = [["open", "retry", "To retry", open.length], ["fixed", "check", "Fixed", fixed.length]]
+      .map(([id, ic, label, n]) => `<button type="button" class="tab${mistakeTab === id ? " on" : ""}" role="tab" aria-selected="${mistakeTab === id}" data-tab="${id}">${icon(ic)}${label}<span class="n">${n}</span></button>`)
+      .join("");
+    const q = mistakeQuery.trim().toLowerCase();
+    const list = (mistakeTab === "open" ? open : fixed)
+      .filter((m) => !q || [m.title, topicById(m.topic)?.name || ""].some((s) => s.toLowerCase().includes(q)));
+    const showFixed = mistakeTab === "fixed";
+    const rows = list.map((m) => {
+      const t = topicById(m.topic);
+      return `<tr>
+        <td class="lesson"><a class="link" href="${MISTAKES_HREF}">${esc(m.title)}</a></td>
+        <td>${t ? `<a class="chip" href="${noteHref(t.id)}">${esc(t.name)}</a>` : ""}</td>
+        <td class="nowrap">${m.missed.map(short).join(", ")}</td>
+        ${showFixed ? `<td class="nowrap">${short(m.fixed)}</td>` : ""}
+      </tr>`;
+    }).join("");
+    const empty = q ? "No mistakes match" : showFixed ? "Nothing fixed yet" : "Nothing to retry";
+    $("#mistakes").innerHTML = `<div class="tbl-scroll"><table class="db">
+      <thead><tr>
+        <th><span class="th"><span class="aa">Aa</span>Mistake</span></th>
+        <th><span class="th">${icon("list")}Topic</span></th>
+        <th><span class="th">${icon("x")}Missed</span></th>
+        ${showFixed ? `<th><span class="th">${icon("check")}Fixed</span></th>` : ""}
+      </tr></thead>
+      <tbody>${rows || `<tr><td colspan="${showFixed ? 4 : 3}" class="muted">${empty}</td></tr>`}</tbody>
+    </table></div>`;
+  }
+
+  // Every day from the first day with questions, or DAYS_SHOWN days back, to the last one. Days off show as gaps.
+  function days() {
+    const dates = [...data.answered.keys()].sort();
+    if (!dates.length) return [];
+    const end = toDate(dates[dates.length - 1]);
+    const earliest = new Date(end);
+    earliest.setDate(earliest.getDate() - (DAYS_SHOWN - 1));
+    const start = toDate(dates[0]) > earliest ? toDate(dates[0]) : earliest;
+    const out = [];
+    for (const d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      const key = toKey(d);
+      out.push({ date: key, n: data.answered.get(key) || 0 });
+    }
+    return out;
+  }
+
+  // The running total: one point for each day with questions, spaced by date. It only ever goes up, so it needs two days to show.
+  function totalSvg(points) {
+    const w = 320, h = 74, padX = 6, top = 6, bottom = 18;
+    const time = (s) => toDate(s).getTime();
+    const t0 = time(points[0].date);
+    const t1 = time(points[points.length - 1].date);
+    const end = points[points.length - 1];
+    const x = (s) => (t1 === t0 ? w / 2 : padX + ((time(s) - t0) / (t1 - t0)) * (w - 2 * padX));
+    const y = (n) => top + (1 - n / end.total) * (h - top - bottom);
+    const base = h - bottom;
+    const line = points.map((p) => `${x(p.date).toFixed(1)},${y(p.total).toFixed(1)}`).join(" ");
+    // With many days, dots would run together; then only the latest one gets a dot.
+    const dotted = points.length <= 30 ? points : [end];
+    return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${end.total} questions by ${short(end.date)}">
+      <polygon class="gr-area" points="${x(points[0].date).toFixed(1)},${base} ${line} ${x(end.date).toFixed(1)},${base}"/>
+      <polyline class="gr-line" points="${line}"/>
+      ${dotted.map((p) => `<circle class="gr-dot" cx="${x(p.date).toFixed(1)}" cy="${y(p.total).toFixed(1)}" r="2.5"><title>${short(p.date)}: ${p.total} in all</title></circle>`).join("")}
+      <text class="axis" x="${padX}" y="${h - 3}">${short(points[0].date)}</text>
+      ${points.length > 1 ? `<text class="axis" x="${w - padX}" y="${h - 3}" text-anchor="end">${short(end.date)}</text>` : ""}
+    </svg>`;
+  }
+
+  // The total so far and how it grew, then one bar per day with its count on top.
+  function renderAnswered() {
+    const dates = [...data.answered.keys()].filter((date) => data.answered.get(date) > 0).sort();
+    if (!dates.length) {
+      $("#answered").innerHTML = '<p class="empty">No questions yet</p>';
+      return;
+    }
+    let total = 0;
+    const points = dates.map((date) => ({ date, total: (total += data.answered.get(date)) }));
+    const list = days();
+    const w = 320, h = 86, top = 14, bottom = 18;
+    const base = h - bottom;
+    const max = Math.max(...list.map((d) => d.n), 1);
+    const slot = w / Math.max(list.length, 7);
+    const bw = Math.min(14, slot * 0.4);
+    const x0 = (w - slot * list.length) / 2;
+    const bars = list.map((d, i) => {
+      const cx = x0 + i * slot + slot / 2;
+      if (!d.n) return "";
+      const bh = (d.n / max) * (base - top);
+      return `<g><title>${short(d.date)}: ${d.n} ${d.n === 1 ? "question" : "questions"}</title>
+        <rect class="bar" x="${(cx - bw / 2).toFixed(1)}" y="${(base - bh).toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="3"/>
+        <text class="bar-label" x="${cx.toFixed(1)}" y="${(base - bh - 4).toFixed(1)}" text-anchor="middle">${d.n}</text>
+      </g>`;
+    }).join("");
+    const first = list[0], last = list[list.length - 1];
+    const cx = (i) => (x0 + i * slot + slot / 2).toFixed(1);
+    $("#answered").innerHTML = `<div class="total"><b>${total}</b><span>${total === 1 ? "question" : "questions"} so far</span></div>
+      ${points.length > 1 ? `<div class="chart">${totalSvg(points)}</div>` : ""}
+      <div class="chart-head">Each day</div>
+      <div class="chart"><svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Questions answered each day">
+      <line class="baseline" x1="${x0.toFixed(1)}" x2="${(x0 + slot * list.length).toFixed(1)}" y1="${base}" y2="${base}"/>
+      ${bars}
+      <text class="axis" x="${cx(0)}" y="${h - 3}" text-anchor="middle">${short(first.date)}</text>
+      ${list.length > 1 ? `<text class="axis" x="${cx(list.length - 1)}" y="${h - 3}" text-anchor="middle">${short(last.date)}</text>` : ""}
+    </svg></div>`;
+  }
+
+  // The topics I'm focusing on, each with how I'm doing on it.
+  function renderFocus() {
+    const topics = data.focus.map(topicById).filter(Boolean);
+    $("#focus").innerHTML = topics.map((t) => `<li><a class="link" href="${noteHref(t.id)}">${esc(t.name)}</a>${tag(LEVEL[t.level])}</li>`).join("");
+    $("#focus-section").hidden = !topics.length;
+  }
+
+  $("#mistake-tabs").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-tab]");
+    if (!button) return;
+    mistakeTab = button.dataset.tab;
+    renderMistakes();
+  });
+  $("#mistake-search").addEventListener("input", (event) => {
+    mistakeQuery = event.target.value;
+    renderMistakes();
+  });
+
+  /* ---------- Start ---------- */
+
+  // There's no console in StashBase, so problems show at the bottom right, ready to pass on.
+  function showProblem(message) {
+    $("#toast-text").textContent = message;
+    $("#toast").hidden = false;
+  }
+  const lineOf = (stack) => /:(\d+):\d+\)?\s*$/m.exec(String(stack || "").split("\n")[1] || "")?.[1];
+  addEventListener("error", (event) => {
+    if (/ResizeObserver loop/i.test(event.message || "")) return;
+    const line = event.lineno || lineOf(event.error?.stack);
+    showProblem(`Page error: ${event.message || "unknown error"}${line ? ` (line ${line})` : ""}`);
+  });
+  addEventListener("unhandledrejection", (event) => {
+    const reason = event.reason;
+    const line = lineOf(reason?.stack);
+    showProblem(`Page error: ${reason?.message || reason}${line ? ` (line ${line})` : ""}`);
+  });
+  $("#toast-close").addEventListener("click", () => {
+    $("#toast").hidden = true;
+  });
+
+  async function start() {
+    const api = window.stashbase?.data;
+    try {
+      // The page only reads. The Agent keeps the data current; StashBase reloads the page when it changes.
+      if (api && typeof api.load === "function") data = normalize(await api.load(DATA_PATH));
+      else {
+        const response = await fetch(DATA_PATH);
+        if (response.ok) data = normalize(await response.json());
+      }
+    } catch (error) {
+      showProblem(`Couldn't load the study data: ${error?.message || error}`);
+    }
+    render();
+  }
+
+  start();
+})();
+</script>
+</body>
+</html>
